@@ -1,5 +1,5 @@
 <template>
-  <div class="pad50">
+  <div class="pad50" @dblclick="showBar" style="height: 100%;">
     <Row type="flex" justify="center" align="middle">
       <Col>
       <div style="margin-top:20px;">
@@ -14,27 +14,27 @@
     <!-- tool bar -->
     <div>
       <Button type="primary" icon="md-add" @click="showAdd()">添加</Button>
-      <Button type="success" icon="ios-sunny" @click="allEnable(true)">启用</Button>
-      <Button type="dashed" icon="ios-sunny-outline" @click="allEnable(false)">停用</Button>
+      <Button v-show="barEnable" type="success" icon="ios-sunny" @click="allEnable(true)">启用</Button>
+      <Button v-show="barDisable" type="dashed" icon="ios-sunny-outline" @click="allEnable(false)">停用</Button>
     </div>
 
     <Row :gutter="32">
       <Col span="6" v-for="(item,index) in dataSources" class="top30 cursor">
       <Card>
         <p slot="title" style="margin-top:2px">
-          <Icon type="ios-leaf" size=18 color="#19be6b" style="margin-top:-5px" /> {{item.dataSource}}
+          <Icon type="ios-leaf" size=18 color="#19be6b" style="margin-top:-5px" />
+          {{item.dataSource}}
         </p>
         <a href="#" slot="extra">
+          <Icon v-show="barDel" type="ios-close-circle" color="#ed4014" size=20 @click="remove(item.id)" style="position: relative;left: 58px;top: -27px;" />
           <i-switch size="small" :value=item.enable :id=item.id @on-change="enableHandle">
             <span slot="open"></span>
             <span slot="close"></span>
           </i-switch>
         </a>
-        <a href="#" slot="extra">
-          &nbsp;
-          <Icon type="md-close" color="#ed4014" size=20 @click="remove(item.id)" />
-        </a>
-        <span style="word-wrap:break-word;cursor:pointer;color:#229954" @click="showUpdate(item.id)">TaskId: {{item.taskId}}</span>
+        <span style="word-wrap:break-word;cursor:pointer;color:#515a6e" @click="showUpdate(item.id)">
+          <Icon type="ios-medical" style="margin-top:-3px" /> {{item.taskId}}
+        </span>
       </Card>
       </Col>
     </Row>
@@ -75,6 +75,9 @@ export default {
       dataSources: [],
       dataSourcesTmp: [],
       isShowDrawer: false,
+      barDel: false,
+      barEnable: false,
+      barDisable: false,
       styles: {
         height: 'calc(100% - 55px)',
         overflow: 'auto',
@@ -182,6 +185,11 @@ export default {
     reset() {
       this.formData.dataSource = '';
       this.formData.data = '';
+    },
+    showBar() {
+      this.barDel = !this.barDel;
+      this.barEnable = !this.barEnable;
+      this.barDisable = !this.barDisable;
     },
     fuzzyQuery(list, keyWord) {
       var arr = [];
